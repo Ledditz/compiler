@@ -1,0 +1,34 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: gcc.exe Aktive Datei kompilieren",
+            "command": "C:\\MinGW\\bin\\gcc.exe",
+            "args": [
+                "-g",
+                "${file}",
+                "${fileDirname}\\list.c ",
+                "${fileDirname}\\codeGen.c",
+                "${fileDirname}\\lexframe.c",
+                "${fileDirname}\\code.h",
+                "${fileDirname}\\list.h",
+                "${fileDirname}\\lex.h",
+                "${fileDirname}\\parse.h",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Vom Debugger generierte Aufgabe."
+        }
+    ],
+    "version": "2.0.0"
+}
