@@ -77,6 +77,7 @@ tProc *createProc(tProc *pParent)
     tProc *pP = (tProc *)malloc(sizeof(tProc));
     if (pP == NULL)
     {
+        printf("FEHLER MALLOC\n");
         return NULL;
     }
     pP->Kz = KzPro;
@@ -84,6 +85,7 @@ tProc *createProc(tProc *pParent)
     pP->pParent = pParent;
     pP->pLBez = CreateList();
     pP->SpzzVar = 0;
+    pP->vCode = NULL;
     pCurrPr = pP;
 
     return pP;
@@ -93,7 +95,7 @@ tBez *searchBez(tProc *pProc, char *pBez)
 {
     t_cnt *pB;
     // printf("suche nach: %s\n", pBez);
-    pB = pProc->pLBez->pfirst;
+    // pB = pProc->pLBez->pfirst;
     for (pB = pProc->pLBez->pfirst;
          pB != NULL && strcmp(((tBez *)pB->pdata)->pName, pBez) != 0;
          pB = pB->pnext)

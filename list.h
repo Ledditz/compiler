@@ -56,6 +56,7 @@ typedef struct tPROC
     struct tPROC *pParent;
     tList *pLBez;
     int SpzzVar;
+    char *vCode;
 } tProc;
 
 //functions

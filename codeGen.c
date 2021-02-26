@@ -41,14 +41,20 @@ int code(tCode Code, ...)
     va_list ap;
     short sarg;
 
-    if (pCode - vCode + MAX_LEN_OF_CODE >= LenCode)
+    if (pCurrPr->vCode == NULL)
     {
-        char *xCode = realloc(vCode, (LenCode += 1024));
+        pCurrPr->vCode = malloc(LenCode);
+        pCurrPr->vCode = pCode;
+    }
+
+    if (pCode - pCurrPr->vCode + MAX_LEN_OF_CODE >= LenCode)
+    {
+        char *xCode = realloc(pCurrPr->vCode, (LenCode += 1024));
         if (xCode == NULL)
             // Error(ENoMem);
             exit(-1);
-        pCode = xCode + (pCode - vCode);
-        vCode = xCode;
+        pCode = xCode + (pCode - pCurrPr->vCode);
+        pCurrPr->vCode = xCode;
     }
     *pCode++ = (char)Code;
     va_start(ap, Code);
@@ -78,14 +84,14 @@ int code(tCode Code, ...)
 
         /* keine Parameter */
     case putStrg:
-        if ((int)(pCode - vCode + strlen(Morph.Val.pStr) + 1) >= LenCode)
+        if ((int)(pCode - pCurrPr->vCode + strlen(Morph.Val.pStr) + 1) >= LenCode)
         {
-            char *xCode = realloc(vCode, (LenCode += 1024));
+            char *xCode = realloc(pCurrPr->vCode, (LenCode += 1024));
             if (xCode == NULL)
                 // Error(ENoMem);
                 exit(-1);
-            pCode = xCode + (pCode - vCode);
-            vCode = xCode;
+            pCode = xCode + (pCode - pCurrPr->vCode);
+            pCurrPr->vCode = xCode;
         }
         strcpy(pCode, Morph.Val.pStr);
         pCode += strlen(pCode) + 1;
@@ -99,10 +105,10 @@ int code(tCode Code, ...)
 
 int CodeOut(void)
 {
-    unsigned short Len = (unsigned short)(pCode - vCode);
-    wr2ToCodeAtP((short)Len, vCode + 1);
-    wr2ToCodeAtP((short)pCurrPr->SpzzVar, vCode + 5);
-    if (Len == fwrite(vCode, sizeof(char), Len, pOFile))
+    unsigned short Len = (unsigned short)(pCode - pCurrPr->vCode);
+    wr2ToCodeAtP((short)Len, pCurrPr->vCode + 1);
+    wr2ToCodeAtP((short)pCurrPr->SpzzVar, pCurrPr->vCode + 5);
+    if (Len == fwrite(pCurrPr->vCode, sizeof(char), Len, pOFile))
         return 1;
     else
         return 0;

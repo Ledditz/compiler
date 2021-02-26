@@ -167,7 +167,7 @@ int main(int argc, void *argv[])
     }
     else
     {
-        printf("succsessfully parsed");
+        printf("succsessfully parsed\n");
         closeOFile();
     }
 
@@ -456,6 +456,7 @@ int Statement10()
     pLabl = (tLabl *)pListLabel->pfirst->pdata;
     printf("    jmp : %X\n", relAdr);
     code(jmp, pLabl->iJmp - pCode - 3);
+    popL(pListLabel);
     return 1;
 }
 
@@ -467,18 +468,18 @@ int Statement16()
     if (pBez == NULL)
     {
         // Bez nicht gefunden -> Fehler behandeln
-        printf("Bez nicht gefunden %s\n", Morph.Val.pStr);
+        printf("    Bez nicht gefunden %s\n", Morph.Val.pStr);
         exit(0);
     }
     tProc *pProc = (tProc *)pBez->pObj;
     if (pProc == NULL)
     {
-        printf("pProc ist NULL\n");
+        printf("    pProc ist NULL\n");
         exit(-1);
     }
     if (pProc->Kz != KzPro)
     {
-        printf("Fehler: kein Prozedur Bez\n");
+        printf("    Fehler: kein Prozedur Bez\n");
         exit(-1);
     }
     code(call, pProc->IdxProc);
@@ -626,15 +627,9 @@ int Block1()
     tBez *pBez;
     pBez = searchBez(pCurrPr, (char *)Morph.Val.pStr);
     if (pBez != NULL)
-    {
-        printf("    Bez bereit vorhanden %s\n", Morph.Val.pStr);
         return 0;
-    }
     if (createBez((char *)Morph.Val.pStr) == NULL)
-    {
-        printf("    Fehler beim anlegen von  %s\n", Morph.Val.pStr);
         return 0;
-    }
     return 1;
 }
 
@@ -645,6 +640,7 @@ int Block3()
     tConst *pCnst;
     pBez = (tBez *)pCurrPr->pLBez->pfirst->pdata;
     if ((pCnst = searchConst(Morph.Val.Num)) != NULL)
+        // const gefunden
         pBez->pObj = pCnst;
     else
     {
@@ -661,7 +657,7 @@ int Block3()
 int Block7()
 {
     printf("BLOCK 7\n");
-    printf("    %s\n", (char *)Morph.Val.pStr);
+    // printf("    %s\n", (char *)Morph.Val.pStr);
     tBez *pBez = NULL;
     pBez = searchBez(pCurrPr, (char *)Morph.Val.pStr);
     if (pBez != NULL)
@@ -681,7 +677,7 @@ int Block7()
 int Block11()
 {
     printf("BLOCK 11\n");
-    tBez *pBez;
+    tBez *pBez = NULL;
     tProc *pProc;
     pBez = searchBez(pCurrPr, (char *)Morph.Val.pStr);
     if (pBez != NULL)
@@ -689,12 +685,19 @@ int Block11()
         printf("    Bez bereits vorhanden %s\n", Morph.Val.pStr);
         return 0;
     }
-    if (createBez((char *)Morph.Val.pStr) == NULL)
+    pBez = createBez((char *)Morph.Val.pStr);
+    if (pBez == NULL)
     {
         printf("    fehler beim anlegen des bez %s\n", Morph.Val.pStr);
         return 0;
     }
+    // printf("testtest\n");
     pProc = createProc(pCurrPr);
+    if (pProc == NULL)
+    {
+        printf("    Fehler beim anlegen\n");
+        return 0;
+    }
     pBez->pObj = pProc;
     pCurrPr = pProc;
 
@@ -703,7 +706,7 @@ int Block11()
 
 int Block14()
 {
-    // printf("BLOCK14\n");
+    printf("BLOCK 14\n");
     while (popL(pCurrPr->pLBez) != -1)
         ;
     pCurrPr = pCurrPr->pParent;
@@ -712,17 +715,21 @@ int Block14()
 
 int Block15()
 {
-    printf("BLOCK15\n");
+    printf("BLOCK 15\n");
+    // TODO Namensliste der Proc auflösen
+
     code(retProc);
     CodeOut();
-    // TODO Namensliste der Proc auflösen
+    if (pCurrPr->pParent != NULL)
+        pCurrPr = pCurrPr->pParent;
     return 1;
 }
 
 int Block16()
 {
-    printf("BLOCK16\n");
+    printf("BLOCK 16\n");
     // Codeausgabepuffer initialisieren
+    printf("    with: %i  %i\n", pCurrPr->IdxProc, pCurrPr->SpzzVar);
     code(entryProc, 0, pCurrPr->IdxProc, pCurrPr->SpzzVar);
     return 1;
 }

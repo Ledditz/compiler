@@ -3,8 +3,6 @@ var a,b,m;
 procedure p;
 begin
  m:=a;
- if b>m then
-    m:=b;
  !m
 end;
 begin
