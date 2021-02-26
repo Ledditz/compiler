@@ -1,12 +1,10 @@
-const c=2;
-var a,b,m;
-procedure p;
+const c=10;
+var i;
 begin
- m:=a;
- !m
-end;
+i:=0;
+while i<c do
 begin
- ?a;
- ?b;
- call p
+!i;
+i:=i+1
+end
 end.
