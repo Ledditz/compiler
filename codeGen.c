@@ -140,7 +140,7 @@ int closeOFile(void)
 {
     char vBuf2[2];
     fseek(pOFile, 0, SEEK_SET);
-    printf("IdxProc: %i\n", IdxProc);
+    // printf("IdxProc: %i\n", IdxProc);
     wr2ToCodeAtP(IdxProc, vBuf2);
     if (fwrite(vBuf2, 1, 2, pOFile) == 2)
         return 1;

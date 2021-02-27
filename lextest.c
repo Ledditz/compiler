@@ -143,7 +143,7 @@ int testSearch()
 
 int main(int argc, void *argv[])
 {
-    printf("MAIN\n");
+    // printf("MAIN\n");
     initLex(argv[1]);
     initNamelist();
 
@@ -231,7 +231,7 @@ void initNamelist()
 
     if (openOFile("test.pl0"))
     {
-        printf("alles cool mit dem File\n");
+        // printf("alles cool mit dem File\n");
     }
     else
         printf("Fehler mit dem File\n");
@@ -240,7 +240,7 @@ void initNamelist()
 int i = 200;
 int pars(tBog *pGraph)
 {
-    // printf("Start PARSE\n");
+    printf("Start PARSE\n");
     if (pGraph == NULL)
     {
         pGraph = gProg;
@@ -302,7 +302,7 @@ int pars(tBog *pGraph)
 // TODO: Rename
 void dumpConst(t_cnt *pL)
 {
-    printf("DUMP CONST\n");
+    // printf("DUMP CONST\n");
     if (pL == NULL)
     {
         return;
@@ -317,7 +317,7 @@ void dumpConst(t_cnt *pL)
 
 int Programm1()
 {
-    printf("PROGRAMM1\n");
+    // printf("PROGRAMM 1\n");
     char *constCode = pCode;
     dumpConst(pLConst->pfirst);
     unsigned short Len = (unsigned short)(pCode - constCode);
@@ -356,9 +356,9 @@ int Expression8()
 int Statement0()
 {
     // Bez global suchen
-    printf("STATEMENT 0\n");
+    // printf("STATEMENT 0\n");
     tBez *pBez;
-    printf("    %s\n", Morph.Val.pStr);
+    // printf("    %s\n", Morph.Val.pStr);
     pBez = searchBezGlobal(Morph.Val.pStr);
     if (pBez == NULL)
     {
@@ -396,14 +396,14 @@ int Statement0()
 
 int Statement2()
 {
-    printf("STATEMENT 2\n");
+    // printf("STATEMENT 2\n");
     code(storeVal);
     return 1;
 }
 
 int Statement4()
 {
-    printf("STATEMENT 4: %X\n", pCode);
+    // printf("STATEMENT 4: %X\n", pCode);
     tLabl *pLabl = creatLabel(KzJnt, pCode);
     pushL(pListLabel, pLabl);
     code(jnot, 0);
@@ -412,7 +412,7 @@ int Statement4()
 
 int Statement6()
 {
-    printf("STATEMENT 6\n");
+    // printf("STATEMENT 6\n");
     tLabl *pLabl = (tLabl *)pListLabel->pfirst->pdata;
     // printf("    pCode: %X\n", pCode);
     // printf("    ijmp : %X\n", pLabl->iJmp);
@@ -430,7 +430,7 @@ int Statement6()
 
 int Statement7()
 {
-    printf("STATEMENT 7\n");
+    // printf("STATEMENT 7\n");
     tLabl *pLabl = creatLabel(KzWCnd, pCode);
     pushL(pListLabel, pLabl);
     return 1;
@@ -438,7 +438,7 @@ int Statement7()
 
 int Statement8()
 {
-    printf("STATEMENT 8\n");
+    // printf("STATEMENT 8\n");
     tLabl *pLabl = creatLabel(KzJnt, pCode);
     pushL(pListLabel, pLabl);
     code(jnot, 0);
@@ -447,14 +447,14 @@ int Statement8()
 
 int Statement10()
 {
-    printf("STATEMENT 10\n");
+    // printf("STATEMENT 10\n");
     tLabl *pLabl = (tLabl *)pListLabel->pfirst->pdata;
     short relAdr = pCode - pLabl->iJmp;
-    printf("    jnt : %X\n", relAdr);
+    // printf("    jnt : %X\n", relAdr);
     wr2ToCodeAtP(relAdr, pLabl->iJmp + 1);
     popL(pListLabel);
     pLabl = (tLabl *)pListLabel->pfirst->pdata;
-    printf("    jmp : %X\n", relAdr);
+    // printf("    jmp : %X\n", relAdr);
     code(jmp, pLabl->iJmp - pCode - 3);
     popL(pListLabel);
     return 1;
@@ -462,7 +462,7 @@ int Statement10()
 
 int Statement16()
 {
-    printf("STATEMENT 16\n");
+    // printf("STATEMENT 16\n");
     tBez *pBez;
     pBez = searchBezGlobal(Morph.Val.pStr);
     if (pBez == NULL)
@@ -488,14 +488,14 @@ int Statement16()
 
 int Statement18()
 {
-    printf("STATEMENT 18\n");
+    // printf("STATEMENT 18\n");
     Statement0();
     code(getVal);
     return 1;
 }
 int Statement20()
 {
-    printf("STATEMENT 20\n");
+    // printf("STATEMENT 20\n");
     code(putVal);
     return 1;
 }
@@ -504,14 +504,14 @@ tMorph condOperator;
 
 int ConditionSaveOperator()
 {
-    printf("Save operator\n");
+    // printf("Save operator\n");
     condOperator = Morph;
     return 1;
 }
 
 int Condition4()
 {
-    printf("CONDITION 4\n");
+    // printf("CONDITION 4\n");
     switch (condOperator.MC)
     {
     case mcSymb:
@@ -548,14 +548,14 @@ int Condition4()
 
 int Condition1()
 {
-    printf("CONDITION 1\n");
+    // printf("CONDITION 1\n");
     code(odd);
     return 1;
 }
 
 int Factor1()
 {
-    printf("FACTOR 1\n");
+    // printf("FACTOR 1\n");
     tConst *pConst;
     pConst = searchConst(Morph.Val.Num);
     if (pConst == NULL)
@@ -571,7 +571,7 @@ int Factor1()
 
 int Factor0()
 {
-    printf("FACTOR 0\n");
+    // printf("FACTOR 0\n");
     // Bez global suchen
     tBez *pBez;
     pBez = searchBezGlobal(Morph.Val.pStr);
@@ -623,7 +623,7 @@ int Factor0()
 
 int Block1()
 {
-    printf("BLOCK 1\n");
+    // printf("BLOCK 1\n");
     tBez *pBez;
     pBez = searchBez(pCurrPr, (char *)Morph.Val.pStr);
     if (pBez != NULL)
@@ -635,7 +635,7 @@ int Block1()
 
 int Block3()
 {
-    printf("BLOCK 3\n");
+    // printf("BLOCK 3\n");
     tBez *pBez;
     tConst *pCnst;
     pBez = (tBez *)pCurrPr->pLBez->pfirst->pdata;
@@ -656,7 +656,7 @@ int Block3()
 
 int Block7()
 {
-    printf("BLOCK 7\n");
+    // printf("BLOCK 7\n");
     // printf("    %s\n", (char *)Morph.Val.pStr);
     tBez *pBez = NULL;
     pBez = searchBez(pCurrPr, (char *)Morph.Val.pStr);
@@ -676,7 +676,7 @@ int Block7()
 
 int Block11()
 {
-    printf("BLOCK 11\n");
+    // printf("BLOCK 11\n");
     tBez *pBez = NULL;
     tProc *pProc;
     pBez = searchBez(pCurrPr, (char *)Morph.Val.pStr);
@@ -706,7 +706,7 @@ int Block11()
 
 int Block14()
 {
-    printf("BLOCK 14\n");
+    // printf("BLOCK 14\n");
     while (popL(pCurrPr->pLBez) != -1)
         ;
     pCurrPr = pCurrPr->pParent;
@@ -715,7 +715,7 @@ int Block14()
 
 int Block15()
 {
-    printf("BLOCK 15\n");
+    // printf("BLOCK 15\n");
     // TODO Namensliste der Proc auflösen
 
     code(retProc);
@@ -727,9 +727,9 @@ int Block15()
 
 int Block16()
 {
-    printf("BLOCK 16\n");
+    // printf("BLOCK 16\n");
     // Codeausgabepuffer initialisieren
-    printf("    with: %i  %i\n", pCurrPr->IdxProc, pCurrPr->SpzzVar);
+    // printf("    with: %i  %i\n", pCurrPr->IdxProc, pCurrPr->SpzzVar);
     code(entryProc, 0, pCurrPr->IdxProc, pCurrPr->SpzzVar);
     return 1;
 }
