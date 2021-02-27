@@ -96,6 +96,7 @@ int Statement10(void);
 int Statement16(void);
 int Statement18(void);
 int Statement20(void);
+int Statement22(void);
 int Factor1(void);
 int Factor0(void);
 int Expression1(void);

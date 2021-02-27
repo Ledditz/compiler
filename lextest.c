@@ -94,7 +94,7 @@ tBog gStat[] = {
     /*21*/ {BgNl, {(ul)0}, NULL, 22, 0},
     /*22*/ {BgEn, {(ul)0}, NULL, 0, 0},
 
-    /*23*/ {BgSt, {(ul)mcStrng}, NULL, 22, 20}};
+    /*23*/ {BgSt, {(ul)mcStrng}, Statement22, 22, 20}};
 
 tBog gBlock[] = {
     /*00*/ {BgSy, {(ul)zCST}, NULL, 1, 6},
@@ -512,10 +512,18 @@ int Statement18()
     code(getVal);
     return 1;
 }
+
 int Statement20()
 {
     // printf("STATEMENT 20\n");
     code(putVal);
+    return 1;
+}
+
+int Statement22()
+{
+    printf("STATEMENT 22\n");
+    code(putStrg, Morph.Val.pStr);
     return 1;
 }
 
