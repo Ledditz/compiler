@@ -29,12 +29,13 @@ int initLex(char *fname)
 }
 
 /* Zeichenklassenvektor */
+// 8 .. "
 static char vZKl[128] =
     /*      0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F */
     /*          --------------------...--------------*/
     /* 0*/ {7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, /* 0*/
     /*10*/  7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, /*10*/
-    /*20*/  7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /*20*/
+    /*20*/  7, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /*20*/
     /*30*/  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 0, 5, 4, 6, 0, /*30*/
     /*40*/  0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, /*40*/
     /*50*/  2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, /*50*/
@@ -97,6 +98,7 @@ int n, i;
 static void fb(void)
 {
     int i, j;
+    // printf("ZZZZZZZz:   %i\n", Z);
     switch (Z)
     {
     /* Symbol */
@@ -149,6 +151,12 @@ static void fb(void)
         Morph.MC = mcSymb;
         break;
         // weitere Casezweige
+    /* String */
+    case 10:
+        // printf("buf: %s\n",vBuf);
+        Morph.MC=mcStrng;
+        Morph.Val.pStr=vBuf;
+        break;
     }
     Ende = 1; // entfällt bei Variante mit Zustand zEnd
 };
@@ -177,18 +185,20 @@ static void fslb(void)
 };
 
 /* Automatentabelle */
-static tAutomat vSMatrix[][8] =
-    /*           So         Zi      Buchstabe    ':'      '='      '<'       '>'       Space
+static tAutomat vSMatrix[][9] =
+    /*           So         Zi      Buchstabe    ':'      '='      '<'       '>'       Space      '"'
     /*---------------------...-----------------------*/
-    /* 0 */ {{{0, fslb}, {1, fsl}, {2, fgl}, {3, fsl}, {0, fslb}, {4, fsl}, {5, fsl}, {0, fl}},
-    /* 1 */ { {0, fb},   {1, fsl}, {0, fb},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}},
-    /* 2 */ { {0, fb},   {2, fsl}, {2, fgl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}},
-    /* 3 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {6, fsl},  {0, fb},  {0, fb},  {0, fb}},
-    /* 4 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {7, fsl},  {0, fb},  {0, fb},  {0, fb}},
-    /* 5 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {8, fsl},  {0, fb},  {0, fb},  {0, fb}},
-    /* 6 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}},
-    /* 7 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}},
-    /* 8 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}}};
+    /* 0 */ {{{0, fslb}, {1, fsl}, {2, fgl}, {3, fsl}, {0, fslb}, {4, fsl}, {5, fsl}, {0, fl},  {9,fl}},
+    /* 1 */ { {0, fb},   {1, fsl}, {0, fb},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0,fb}},
+    /* 2 */ { {0, fb},   {2, fsl}, {2, fgl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0,fb}},
+    /* 3 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {6, fsl},  {0, fb},  {0, fb},  {0, fb},  {0,fb}},
+    /* 4 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {7, fsl},  {0, fb},  {0, fb},  {0, fb},  {0,fb}},
+    /* 5 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {8, fsl},  {0, fb},  {0, fb},  {0, fb},  {0,fb}},
+    /* 6 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0,fb}},
+    /* 7 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0,fb}},
+    /* 8 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0,fb}},
+    /* 9 */ { {0, fb},   {0, fb},  {9, fsl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {9, fsl}, {10,fl}},
+    /*10 */ { {0, fb},   {0, fb},  {0, fb},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb},  {9,fsl}}};
 
 typedef void (*FX)(void);
 
@@ -197,6 +207,7 @@ static FX vfx[] = {fl, fb, fgl, fsl, fslb};
 /*---- Lexikalische Analyse ----*/
 tMorph Lex(void)
 {
+    // printf("Start LEX\n");
     int Zn;
     Z = 0;
     Morph = MorphInit;
@@ -212,7 +223,30 @@ tMorph Lex(void)
         /* Ausfuehrung der Aktion (Ausgabefunktion */
         next.fkt();
         /* Automat schaltet */
+        // printf("String: %c | %i\n",Morph.Val.pStr,next);
         Z = next.Zn;
     } while (Ende == 0);
+    // printf("    vBuf    : %s\n",vBuf);
+    // printf("    Morph.MC: %i\n",Morph.MC);
     return Morph;
 }
+//             // 0           1           2       3       4           5           6        7          8
+// /* 00*/{{{0, fslb}, {2, fsl}, {9, fsl},  {3, fsl}, {0, fslb}, {4, fsl}, {5, fsl}, {0, fl}, {1, fsl}},
+// /* 01 */{{0, fb},   {1, fsl}, {1, fsl},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {1, fsl}},
+// /* 02 */{{0, fb},   {2, fsl}, {2, fgl},  {0, fl},  {0, fl},   {0, fb},  {0, fb},  {0, fb}, {0, fl}},
+// /* 03 */{{0, fb},   {0, fb},  {0, fb},   {0, fb},  {6, fsl},  {0, fl},  {0, fl},  {0, fl}, {0, fl}},
+// /* 04 */{{0, fb},   {0, fb},  {0, fb},   {0, fb},  {7, fsl},  {0, fb},  {0, fb},  {0, fb}, {0, fl}},
+// /* 05 */{{0, fb},   {0, fb},  {0, fb},   {0, fb},  {8, fsl},  {0, fl},  {0, fb},  {0, fb}, {0, fb}},
+// /* 06 */{{0, fb},   {0, fb},  {0, fb},   {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {0, fb}},
+// /* 07 */{{0, fb},   {0, fb},  {0, fb},   {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {0, fb}},
+// /* 08 */{{0, fb},   {0, fb},  {0, fb},   {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {0, fb}},
+// /* 09 */{{0, fb},   {1, fsl}, {10, fsl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {1, fsl}},
+// /* 10 */{{0, fb},   {1, fsl}, {11, fsl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {1, fsl}},
+// /* 11 */{{0, fb},   {1, fsl}, {12, fsl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {1, fsl}},
+// /* 12 */{{0, fb},   {1, fsl}, {13, fsl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {1, fsl}},
+// /* 13 */{{0, fb},   {1, fsl}, {14, fsl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {1, fsl}},
+// /* 14 */{{0, fb},   {1, fsl}, {15, fsl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {1, fsl}},
+// /* 15 */{{0, fb},   {1, fsl}, {16, fsl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {1, fsl}},
+// /* 16 */{{0, fb},   {1, fsl}, {17, fsl}, {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {1, fsl}},
+// /* 17 */{{0, fb},   {1, fsl}, {1, fsl},  {0, fb},  {0, fb},   {0, fb},  {0, fb},  {0, fb}, {1, fsl}},
+// };

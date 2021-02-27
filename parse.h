@@ -5,12 +5,13 @@ typedef enum BOGEN_DESC
     BgSy = 1, // Symbol
     BgMo = 2, // Morphem
     BgGr = 4, // Graph
+    BgSt = 5, // String
     BgEn = 8, // Graphende (altenativ 0 oder -1 als Folgebogen)
 } tBg;
 
 typedef struct BOGEN
 {
-    tBg BgD;  // Bogentyp (Nil, Symbol, Name/Zahl, Graph)
+    tBg BgD;  // Bogentyp (Nil, Symbol, Name/Zahl/String, Graph)
     union BGX // Bogenbeschreibung
     {
         unsigned long X; // für Initialisierung notwendig

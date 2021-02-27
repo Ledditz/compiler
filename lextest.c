@@ -87,12 +87,14 @@ tBog gStat[] = {
     /*17*/ {BgSy, {(ul)'?'}, NULL, 18, 19},
     /*18*/ {BgMo, {(ul)mcIdent}, Statement18, 22, 0},
 
-    /*19*/ {BgSy, {(ul)'!'}, NULL, 20, 21},
+    /*19*/ {BgSy, {(ul)'!'}, NULL, 23, 21},
     /*20*/ {BgGr, {(ul)gExpr}, Statement20, 22, 0},
     // /*20*/ {BgGr, {(ul)gExpr}, NULL, 22, 0},
 
     /*21*/ {BgNl, {(ul)0}, NULL, 22, 0},
-    /*22*/ {BgEn, {(ul)0}, NULL, 0, 0}};
+    /*22*/ {BgEn, {(ul)0}, NULL, 0, 0},
+
+    /*23*/ {BgSt, {(ul)mcStrng}, NULL, 22, 20}};
 
 tBog gBlock[] = {
     /*00*/ {BgSy, {(ul)zCST}, NULL, 1, 6},
@@ -161,7 +163,7 @@ int main(int argc, void *argv[])
         {
             printf("syntax error ");
         }
-        printf("%i\n", Morph.PosLine);
+        // printf("%i\n", Morph.PosLine);
         printf(" near Line %i Col %i\n", Morph.PosLine, Morph.PosCol);
         return -1;
     }
@@ -176,7 +178,7 @@ int main(int argc, void *argv[])
 
 void print_token(void)
 {
-    // printf("unexpected token: ");
+    printf("unexpected token: ");
     switch (Morph.MC)
     {
     case mcSymb:
@@ -210,13 +212,16 @@ void print_token(void)
             printf("Symbol '_WHILE'\n");
 
         if (isprint(Morph.Val.Symb))
-            printf("Symbol '%c'\n", (char)Morph.Val.Symb);
+            printf("Symbol '%c'", (char)Morph.Val.Symb);
         break;
     case mcNum:
-        printf("Zahl   '%ld'\n", Morph.Val.Num);
+        printf("Zahl   '%ld'", Morph.Val.Num);
         break;
     case mcIdent:
-        printf("Ident  '%s'\n", (char *)Morph.Val.pStr);
+        printf("Ident  '%s'", (char *)Morph.Val.pStr);
+        break;
+    case mcStrng:
+        printf("String '%s'", (char *)Morph.Val.pStr);
         break;
     }
 }
@@ -240,7 +245,7 @@ void initNamelist()
 int i = 200;
 int pars(tBog *pGraph)
 {
-    printf("Start PARSE\n");
+    // printf("Start PARSE\n");
     if (pGraph == NULL)
     {
         pGraph = gProg;
@@ -249,30 +254,41 @@ int pars(tBog *pGraph)
     int succ = 0;
     if (Morph.MC == mcEmpty)
         Morph = Lex();
+    // printf("Morph: %i\n", Morph.MC);
     while (1)
     {
         // print_token();
+        // printf("pBog->BgD: %i\n", pBog->BgD);
         switch (pBog->BgD)
         {
         case BgNl:
+            // printf("Nil\n");
             succ = 1;
             break;
         case BgSy:
+            // printf("Symbol\n");
             succ = (Morph.Val.Symb == pBog->BgX.S);
             break;
         case BgMo:
+            // printf("Morph\n");
+            succ = (Morph.MC == (tMC)pBog->BgX.M);
+            break;
+        case BgSt:
+            // printf("String\n");
             succ = (Morph.MC == (tMC)pBog->BgX.M);
             break;
         case BgGr:
+            // printf("Graph\n");
             // printf("eins Tiefer\n");
             succ = pars(pBog->BgX.G);
 
             // printf("====%i===\n", succ);
             break;
         case BgEn:
+            // printf("Ende\n");
             return 1; /* Ende erreichet - Erfolg */
         }
-
+        // printf("succ %i\n", succ);
         if (succ && pBog->fx != NULL)
         {
             succ = pBog->fx();
@@ -280,17 +296,20 @@ int pars(tBog *pGraph)
         if (!succ) /* Alternativbogen probieren */
             if (pBog->iAlt != 0)
             {
+                // printf("test ALT BOG: %i\n", pBog->iAlt);
                 pBog = pGraph + pBog->iAlt;
             }
             else
             {
+                // printf("keine ALT mehr\n");
                 return -1;
             }
         else /* Morphem formal akzeptiert (eaten) */
         {
-            // printf("essen\n");
+            // printf("====================== Akzeptiert\n");
             if (pBog->BgD & BgSy || pBog->BgD & BgMo)
             {
+                // printf("%i | %c | %i\n", Morph.Val.Num, Morph.Val.pStr, Morph.Val.Symb);
                 Morph = Lex();
             }
             // printf("nächster: %i\n", pBog->iNext);
